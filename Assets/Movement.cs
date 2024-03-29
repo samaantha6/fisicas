@@ -6,6 +6,8 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public float speed;
+    public float fuerza;
+    public bool grounded;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +24,27 @@ public class Movement : MonoBehaviour
     private void manageInput()
     {
         transform.position = new Vector3(transform.position.x + Input.GetAxis("Horizontal") * speed * Time.deltaTime, transform.position.y, transform.position.z + Input.GetAxis("Vertical") * speed * Time.deltaTime);
-
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        {
+            GetComponent<Rigidbody>().AddForce(Vector3.up * fuerza, ForceMode.Impulse);
+        }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            grounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            grounded = false;
+        }
+    }
+
+
 }
